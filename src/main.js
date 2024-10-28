@@ -68,6 +68,7 @@ function clickConfirm() {
   if (hex1 !== confirmHex) {
     return;
   }
+  clickCnt++;
   robotjs.mouseClick();
   // console.log(`11111 click confirm`);
 }
@@ -78,20 +79,20 @@ function clickCancel() {
   // console.log(`11111 click cancel`);
 }
 
+let clickCnt = 0;
+
 function startAutoClick() {
   let toggleFlag = false;
 
   if (!!autoClick) {
-    let time = 0;
     const interval = 300;
     const intervalKey = setInterval(() => {
-      time++;
-      if ((autoClickCnt !== -1 && time > autoClickCnt) || (time > 1 && isStopPos())) {
+      if ((autoClickCnt !== -1 && clickCnt > autoClickCnt) || (clickCnt > 1 && isStopPos())) {
         clearInterval(intervalKey);
         return;
       }
       const dayStr = dayjs().format("YYYY-MM-DD HH:mm:ss.SSS");
-      console.log(dayStr, toggleFlag, time);
+      // console.log(dayStr, toggleFlag, clickCnt);
       if (toggleFlag) {
         clickCancel();
         toggleFlag = false;
