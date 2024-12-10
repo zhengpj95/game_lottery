@@ -13,8 +13,8 @@ const rl = readline.createInterface({
 rl.question(`输入是否自动点击(1或0)：`, (isAuto) => {
   autoClick = isAuto ? +isAuto : 1;
   if (!!autoClick) {
-    rl.question(`输入自动点击次数(默认10)：`, (cnt) => {
-      autoClickCnt = +cnt || 1000;
+    rl.question(`输入自动点击次数(默认100)：`, (cnt) => {
+      autoClickCnt = +cnt || 100;
       rl.question(`获取鼠标位置(1或0)：`, (isGet) => {
         const getMouse = isGet ? +isGet : 1;
         if (+getMouse === 1) {
