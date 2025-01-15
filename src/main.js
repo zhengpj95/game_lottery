@@ -41,7 +41,7 @@ rl.question(`输入是否自动点击(1或0)：`, (isAuto) => {
 let confirmPoint = { x: 0, y: 0 };
 let confirmHex = "";
 let cancelPoint = { x: confirmPoint.x + 10, y: confirmPoint.y + 45 };
-const stopHex = ["1e1f22", "1e1e1e", "1f1f1f", "1d1d1d", "1c1c1c"];
+const stopHex = ["1e1f22", "1e1e1e", "1f1f1f", "1d1d1d", "1c1c1c", "040202", "0b1505", "000000"];
 
 function setCancelPoint(point) {
   cancelPoint = { x: point.x + 10, y: point.y + 45 };
@@ -71,6 +71,10 @@ function clickConfirm() {
   clickCnt++;
   robotjs.mouseClick();
   // console.log(`11111 click confirm`);
+  const dayStr = dayjs().format("YYYY-MM-DD HH:mm:ss.SSS");
+  if (clickCnt % 10 === 0) {
+    console.log(dayStr + " " + clickCnt);
+  }
 }
 
 function clickCancel() {
@@ -79,19 +83,30 @@ function clickCancel() {
   // console.log(`11111 click cancel`);
 }
 
-let clickCnt = 0;
+let clickCnt = 0; // 点击次数
+let clickNotAry = [0, 0]; // 控制点击超时结束
 
 function startAutoClick() {
   let toggleFlag = false;
 
   if (!!autoClick) {
-    const interval = 300;
+    const interval = 200;
     const intervalKey = setInterval(() => {
       if ((autoClickCnt !== -1 && clickCnt > autoClickCnt) || (clickCnt > 1 && isStopPos())) {
         clearInterval(intervalKey);
         return;
       }
-      const dayStr = dayjs().format("YYYY-MM-DD HH:mm:ss.SSS");
+      if (!clickNotAry[0] || clickNotAry[1] !== clickCnt) {
+        clickNotAry[0] = dayjs().unix();
+      } else {
+        const curTime = dayjs().unix();
+        if (curTime - clickNotAry[0] >= 10 && clickNotAry[1] === clickCnt) {
+          clearInterval(intervalKey);
+          return;
+        }
+      }
+      clickNotAry[1] = clickCnt;
+      // const dayStr = dayjs().format("YYYY-MM-DD HH:mm:ss.SSS");
       // console.log(dayStr, toggleFlag, clickCnt);
       if (toggleFlag) {
         clickCancel();
